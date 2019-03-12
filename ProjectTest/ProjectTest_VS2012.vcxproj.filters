@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ProjectTest.cpp" />
+    <ClCompile Include="ProjectTestDlg.cpp" />
+    <ClCompile Include="MyCamera.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Projector\BaseWindow.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\MonitorDC.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\Monitors.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\Multimon.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\MultiMonitor.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\Projector.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\ProjectWnd.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+    <ClCompile Include="Projector\RasterImages.cpp">
+      <Filter>projector</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyCamera.h" />
+    <ClInclude Include="ProjectTest.h" />
+    <ClInclude Include="ProjectTestDlg.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Projector\BaseWindow.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\MonitorDC.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\Monitors.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\MultiMonitor.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\Projector.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\ProjectWnd.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="Projector\RasterImages.h">
+      <Filter>projector</Filter>
+    </ClInclude>
+    <ClInclude Include="glew.h" />
+    <ClInclude Include="glut.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ProjectTest.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\ProjectTest.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\ProjectTest.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="projector">
+      <UniqueIdentifier>{5e03c212-6cd7-4783-86fc-93edb92ed848}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
