@@ -4,7 +4,7 @@
 
 #pragma once
 #include "afxwin.h" 
-
+#include "Projector\Projector.h"
 #include "MyCamera.h"
 
 #define STATUS_ERROR            -1
