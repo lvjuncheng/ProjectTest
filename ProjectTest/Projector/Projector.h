@@ -38,6 +38,7 @@ public:
 	void SwitchRasterImages(int i);
 
 	void BuildImages();
+
 	void  PorjectorDisplay(int index);
 	//…Ë÷√ Ù–‘
 	void SetSize(int hight, int width);
@@ -64,7 +65,8 @@ private:
 	int m_lightLow;
 	int m_lightHigh;
 	std::vector<CRasterImagesHolder> m_ImagesHolderArray;
-	
+
+	CRasterImages m_customImages;
 public:
 	static Projector* m_projecter;
 	static Projector * GetInstance();

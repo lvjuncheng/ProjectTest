@@ -14,6 +14,7 @@ Projector * Projector::GetInstance()
 	}
 	return m_projecter;
 }
+
 int  Projector::CreateProjectorWindow( HINSTANCE  hInst)
 {
 	m_proWnd = new CProjectWnd( hInst );
@@ -50,33 +51,16 @@ void Projector::GetProjectSize(int *w, int *h)
 }
 void Projector::InitPictureNum(int num)
 {
-	for (size_t i = 0; i < m_ImagesHolderArray.size(); i++)
-	{
-		if (m_ImagesHolderArray[i].m_bSelected )
-		{
-			m_ImagesHolderArray[i].m_images.InitPictureNum(num);
-		}
-	}
+	m_customImages.InitPictureNum(num);
+	m_proWnd->SetRasterImages(&m_customImages);
 }
 void Projector::SetPictureData(void **ppDataArray, int w, int h)
 {
-	for (size_t i = 0; i < m_ImagesHolderArray.size(); i++)
-	{
-		if (m_ImagesHolderArray[i].m_bSelected)
-		{
-			m_ImagesHolderArray[i].m_images.SetPictureData(ppDataArray, w, h);
-		}
-	}
+	m_customImages.SetPictureData(ppDataArray, w, h);
 }
 void Projector::SetPictureData(void *pData, int w, int h, int index)
 {
-	for (size_t i = 0; i < m_ImagesHolderArray.size(); i++)
-	{
-		if (m_ImagesHolderArray[i].m_bSelected)
-		{
-			m_ImagesHolderArray[i].m_images.SetPictureData(pData, w, h, index);
-		}
-	}
+	m_customImages.SetPictureData(pData, w, h, index);
 }
 void Projector::SetSize(int hight, int width)
 {
@@ -171,6 +155,8 @@ void Projector::SelectRasterImages(int i, bool bSel)
 }
 void Projector::SwitchRasterImages(int i)
 {
+	m_proWnd->SetRasterImages(&m_customImages);
+	return;
 	if (i < (int)m_ImagesHolderArray.size())
 	{
 		m_proWnd->SetRasterImages(&m_ImagesHolderArray[i].m_images);
@@ -188,7 +174,9 @@ void Projector::BuildImages()
 }
 void Projector::PorjectorDisplay(int index)
 {
-	if (index < 100)
+	m_proWnd->RenderImages(index, true);
+	return;
+	if (index < 300)
 	{
 		m_proWnd->RenderImages(index, true);
 	}

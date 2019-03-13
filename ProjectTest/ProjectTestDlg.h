@@ -6,6 +6,7 @@
 #include "afxwin.h" 
 #include "Projector\Projector.h"
 #include "MyCamera.h"
+#include "sn3DImageLoad.h"
 
 #define STATUS_ERROR            -1
 #define IMAGE_NAME_LEN          64
@@ -121,6 +122,9 @@ private:
     unsigned char*  m_pBufForDriver;            // ch:用于从驱动获取图像的缓存 | en:Buffer to get image from driver
     unsigned int    m_nBufSizeForDriver;
 
+	Projector* m_hProjector;
+	sn3DImageData<unsigned char> m_imageData;
+
 /*ch:按下控件操作 | en:Control operation*/
 public:
     /*ch:初始化 | en:Initialization*/
@@ -150,4 +154,6 @@ public:
 public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnBnClickedShowImage();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnBnClickedInitStatic();
 };

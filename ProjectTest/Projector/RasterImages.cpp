@@ -279,7 +279,6 @@ void CRasterImages::glDrawRGB(int w, int h, unsigned char *data)
 }
 void CRasterImages::Draw( int i, bool bPic)
 {
-	return;
 	if (bPic)
 	{
 		if (i >= 0 && i < m_PicsNum)

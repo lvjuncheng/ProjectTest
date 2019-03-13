@@ -10,6 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
+#define SHOW_IMAGE_PATH "H:/ProjectTest/ProjectTest/x64/Release/0.bmp"
 
 
 // CAboutDlg dialog used for App About
@@ -84,6 +85,7 @@ BEGIN_MESSAGE_MAP(CProjectTestDlg, CDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_TIMER()
 	// }}AFX_MSG_MAP
     ON_BN_CLICKED(IDC_ENUM_BUTTON, &CProjectTestDlg::OnBnClickedEnumButton)
     ON_BN_CLICKED(IDC_OPEN_BUTTON, &CProjectTestDlg::OnBnClickedOpenButton)
@@ -100,6 +102,7 @@ BEGIN_MESSAGE_MAP(CProjectTestDlg, CDialog)
     ON_BN_CLICKED(IDC_SAVE_JPG_BUTTON, &CProjectTestDlg::OnBnClickedSaveJpgButton)
 	ON_BN_CLICKED(IDC_SHOW_IMAGE, &CProjectTestDlg::OnBnClickedShowImage)
     ON_WM_CLOSE()
+	ON_BN_CLICKED(IDC_INIT_STATIC, &CProjectTestDlg::OnBnClickedInitStatic)
 END_MESSAGE_MAP()
 
 
@@ -133,6 +136,30 @@ BOOL CProjectTestDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+	m_hProjector = Projector::GetInstance();
+	m_hProjector->CreateProjectorWindow(::GetModuleHandle(NULL));
+
+	if (NULL == m_hProjector)
+	{
+		MessageBox(_T("投影连接错误"));
+		return FALSE;
+	}
+
+	m_hProjector->InitPictureNum(1);
+
+	
+	m_imageData.m_data = NULL;
+	int ret = sn3DImageLoad::sn3DReadImage(SHOW_IMAGE_PATH, m_imageData);
+	if (0 == ret)
+	{
+		m_hProjector->SetPictureData(m_imageData.m_data, m_imageData.m_w, m_imageData.m_h, 0);
+	}
+	else
+	{
+		ShowErrorMsg(TEXT("读取图片出错！"), 0);
+		return FALSE;
+	}
 
 	DisplayWindowInitial();     // ch:显示框初始化 | en:Display Window Initialization
 
@@ -625,15 +652,15 @@ int CProjectTestDlg::SaveImage()
             {
                 break;
             }
-
+			int curChoose = m_ctrlDeviceCombo.GetCurSel();
             char chImageName[IMAGE_NAME_LEN] = {0};
             if (MV_Image_Bmp == stParam.enImageType)
             {
-                sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%03d.bmp", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum);
+				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%d_index%d.bmp", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum, curChoose);
             }
             else if (MV_Image_Jpeg == stParam.enImageType)
             {
-                sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%03d.jpg", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum);
+				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%d_index%d.jpg", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum, curChoose);
             }
             
             FILE* fp = fopen(chImageName, "wb");
@@ -967,6 +994,7 @@ void CProjectTestDlg::OnBnClickedSoftwareTriggerCheck()
     int nRet = SetTriggerSource();
     if (nRet != MV_OK)
     {
+		ShowErrorMsg(TEXT("Trigger fail"), nRet);
         return;
     }
 
@@ -996,8 +1024,6 @@ void CProjectTestDlg::OnBnClickedSaveBmpButton()
         ShowErrorMsg(TEXT("Save bmp fail"), nRet);
         return;
     }
-    ShowErrorMsg(TEXT("Save bmp succeed"), nRet);
-
     return;
 }
 
@@ -1019,6 +1045,11 @@ void CProjectTestDlg::OnBnClickedSaveJpgButton()
 // ch:右上角退出 | en:Exit from upper right corner
 void CProjectTestDlg::OnClose()
 {
+	if (m_hProjector)
+	{
+		m_hProjector->DestroyProjectorWindow();
+		m_hProjector = NULL;
+	}
     PostQuitMessage(0);
     CloseDevice();
     CDialog::OnClose();
@@ -1046,5 +1077,32 @@ BOOL CProjectTestDlg::PreTranslateMessage(MSG* pMsg)
 
 void CProjectTestDlg::OnBnClickedShowImage()
 {
-	ShowErrorMsg(TEXT("No device"), 0);
+	m_hProjector->PorjectorDisplay(0);
+	if (m_ctrlDeviceCombo.GetCount() != 3){
+		ShowErrorMsg(TEXT("请检查摄像头是否插好！"), 0);
+		return;
+	}
+	
+	SetTimer(0, 2000, NULL);
+	SetTimer(1, 4000, NULL);
+	SetTimer(2, 6000, NULL);
+}
+
+void CProjectTestDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	m_ctrlDeviceCombo.SetCurSel(nIDEvent);
+	OnBnClickedOpenButton();
+	OnBnClickedStartGrabbingButton();
+	OnBnClickedTriggerModeRadio();
+	m_bSoftWareTriggerCheck = TRUE;
+	OnBnClickedSoftwareOnceButton();
+	OnBnClickedSaveBmpButton();
+	OnBnClickedCloseButton();
+	KillTimer(nIDEvent);
+}
+
+
+void CProjectTestDlg::OnBnClickedInitStatic()
+{
+	// TODO:  在此添加控件通知处理程序代码
 }
