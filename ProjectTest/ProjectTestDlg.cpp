@@ -10,7 +10,7 @@
 #define new DEBUG_NEW
 #endif
 
-#define SHOW_IMAGE_PATH "H:/ProjectTest/ProjectTest/x64/Release/0.bmp"
+#define SHOW_IMAGE_PATH "./0.bmp"
 
 
 // CAboutDlg dialog used for App About
@@ -55,7 +55,7 @@ CProjectTestDlg::CProjectTestDlg(CWnd* pParent /*=NULL*/)
     , m_nDeviceCombo(0)
     , m_bOpenDevice(FALSE)
     , m_bStartGrabbing(false)
-    , m_nTriggerMode(MV_TRIGGER_MODE_OFF)
+	, m_nTriggerMode(MV_TRIGGER_MODE_ON)
     , m_dExposureEdit(0)
     , m_dGainEdit(0)
     , m_dFrameRateEdit(0)
@@ -76,9 +76,8 @@ void CProjectTestDlg::DoDataExchange(CDataExchange* pDX)
      DDX_Control(pDX, IDC_DEVICE_COMBO, m_ctrlDeviceCombo);
      DDX_CBIndex(pDX, IDC_DEVICE_COMBO, m_nDeviceCombo);
      DDX_Text(pDX, IDC_EXPOSURE_EDIT, m_dExposureEdit);
+	 DDX_Text(pDX, IDC_FRAME_RATE_EDIT, m_dFrameRateEdit);
      DDX_Text(pDX, IDC_GAIN_EDIT, m_dGainEdit);
-     DDX_Text(pDX, IDC_FRAME_RATE_EDIT, m_dFrameRateEdit);
-     DDX_Check(pDX, IDC_SOFTWARE_TRIGGER_CHECK, m_bSoftWareTriggerCheck);
 }
 
 BEGIN_MESSAGE_MAP(CProjectTestDlg, CDialog)
@@ -90,19 +89,15 @@ BEGIN_MESSAGE_MAP(CProjectTestDlg, CDialog)
     ON_BN_CLICKED(IDC_ENUM_BUTTON, &CProjectTestDlg::OnBnClickedEnumButton)
     ON_BN_CLICKED(IDC_OPEN_BUTTON, &CProjectTestDlg::OnBnClickedOpenButton)
     ON_BN_CLICKED(IDC_CLOSE_BUTTON, &CProjectTestDlg::OnBnClickedCloseButton)
-    ON_BN_CLICKED(IDC_CONTINUS_MODE_RADIO, &CProjectTestDlg::OnBnClickedContinusModeRadio)
-    ON_BN_CLICKED(IDC_TRIGGER_MODE_RADIO, &CProjectTestDlg::OnBnClickedTriggerModeRadio)
     ON_BN_CLICKED(IDC_START_GRABBING_BUTTON, &CProjectTestDlg::OnBnClickedStartGrabbingButton)
     ON_BN_CLICKED(IDC_STOP_GRABBING_BUTTON, &CProjectTestDlg::OnBnClickedStopGrabbingButton)
     ON_BN_CLICKED(IDC_GET_PARAMETER_BUTTON, &CProjectTestDlg::OnBnClickedGetParameterButton)
     ON_BN_CLICKED(IDC_SET_PARAMETER_BUTTON, &CProjectTestDlg::OnBnClickedSetParameterButton)
-    ON_BN_CLICKED(IDC_SOFTWARE_TRIGGER_CHECK, &CProjectTestDlg::OnBnClickedSoftwareTriggerCheck)
-    ON_BN_CLICKED(IDC_SOFTWARE_ONCE_BUTTON, &CProjectTestDlg::OnBnClickedSoftwareOnceButton)
     ON_BN_CLICKED(IDC_SAVE_BMP_BUTTON, &CProjectTestDlg::OnBnClickedSaveBmpButton)
-    ON_BN_CLICKED(IDC_SAVE_JPG_BUTTON, &CProjectTestDlg::OnBnClickedSaveJpgButton)
 	ON_BN_CLICKED(IDC_SHOW_IMAGE, &CProjectTestDlg::OnBnClickedShowImage)
     ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_INIT_STATIC, &CProjectTestDlg::OnBnClickedInitStatic)
+	ON_STN_CLICKED(IDC_EXPOSURE_STATIC, &CProjectTestDlg::OnStnClickedExposureStatic)
 END_MESSAGE_MAP()
 
 
@@ -222,17 +217,10 @@ int CProjectTestDlg::EnableControls(BOOL bIsCameraReady)
     GetDlgItem(IDC_CLOSE_BUTTON)->EnableWindow((m_bOpenDevice && bIsCameraReady) ? TRUE : FALSE);
     GetDlgItem(IDC_START_GRABBING_BUTTON)->EnableWindow((m_bStartGrabbing && bIsCameraReady) ? FALSE : (m_bOpenDevice ? TRUE : FALSE));
     GetDlgItem(IDC_STOP_GRABBING_BUTTON)->EnableWindow(m_bStartGrabbing ? TRUE : FALSE);
-    GetDlgItem(IDC_SOFTWARE_TRIGGER_CHECK)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
-    GetDlgItem(IDC_SOFTWARE_ONCE_BUTTON)->EnableWindow((m_bStartGrabbing && m_bSoftWareTriggerCheck)? TRUE : FALSE);
-    GetDlgItem(IDC_SAVE_BMP_BUTTON)->EnableWindow(m_bStartGrabbing ? TRUE : FALSE);
-    GetDlgItem(IDC_SAVE_JPG_BUTTON)->EnableWindow(m_bStartGrabbing ? TRUE : FALSE);
     GetDlgItem(IDC_EXPOSURE_EDIT)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
     GetDlgItem(IDC_GAIN_EDIT)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
-    GetDlgItem(IDC_FRAME_RATE_EDIT)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
     GetDlgItem(IDC_GET_PARAMETER_BUTTON)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
     GetDlgItem(IDC_SET_PARAMETER_BUTTON)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
-    GetDlgItem(IDC_CONTINUS_MODE_RADIO)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
-    GetDlgItem(IDC_TRIGGER_MODE_RADIO)->EnableWindow(m_bOpenDevice ? TRUE : FALSE);
 
     return MV_OK;
 }
@@ -497,16 +485,16 @@ int CProjectTestDlg::SetGain(void)
 int CProjectTestDlg::GetFrameRate(void)
 {
 
-    float  fFloatValue = 0.0;
+	float  fFloatValue = 0.0;
 
-    int nRet = m_pcMyCamera->GetFloatValue("ResultingFrameRate", &fFloatValue);
-    if (MV_OK != nRet)
-    {
-        return nRet;
-    }
-    m_dFrameRateEdit = fFloatValue;
+	int nRet = m_pcMyCamera->GetFloatValue("ResultingFrameRate", &fFloatValue);
+	if (MV_OK != nRet)
+	{
+		return nRet;
+	}
+	m_dFrameRateEdit = fFloatValue;
 
-    return MV_OK;
+	return MV_OK;
 }
 
 // ch:设置帧率 | en:Set Frame Rate
@@ -556,7 +544,6 @@ int CProjectTestDlg::SetTriggerSource(void)
             ShowErrorMsg(TEXT("Set Software Trigger Fail"), nRet);
             return nRet;
         }
-        GetDlgItem(IDC_SOFTWARE_ONCE_BUTTON )->EnableWindow(TRUE);
     }
     else
     {
@@ -567,7 +554,6 @@ int CProjectTestDlg::SetTriggerSource(void)
             ShowErrorMsg(TEXT("Set Hardware Trigger Fail"), nRet);
             return nRet;
         }
-        GetDlgItem(IDC_SOFTWARE_ONCE_BUTTON )->EnableWindow(FALSE);
     }
 
     return MV_OK;
@@ -656,11 +642,11 @@ int CProjectTestDlg::SaveImage()
             char chImageName[IMAGE_NAME_LEN] = {0};
             if (MV_Image_Bmp == stParam.enImageType)
             {
-				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%d_index%d.bmp", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum, curChoose);
+				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_index%d.bmp", stImageInfo.nWidth, stImageInfo.nHeight, curChoose);
             }
             else if (MV_Image_Jpeg == stParam.enImageType)
             {
-				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_fn%d_index%d.jpg", stImageInfo.nWidth, stImageInfo.nHeight, stImageInfo.nFrameNum, curChoose);
+				sprintf_s(chImageName, IMAGE_NAME_LEN, "Image_w%d_h%d_index%d.jpg", stImageInfo.nWidth, stImageInfo.nHeight, curChoose);
             }
             
             FILE* fp = fopen(chImageName, "wb");
@@ -818,15 +804,12 @@ void CProjectTestDlg::OnBnClickedCloseButton()
 // ch:按下连续模式按钮 | en:Click Continues button
 void CProjectTestDlg::OnBnClickedContinusModeRadio()
 {
-    ((CButton *)GetDlgItem(IDC_CONTINUS_MODE_RADIO))->SetCheck(TRUE);
-    ((CButton *)GetDlgItem(IDC_TRIGGER_MODE_RADIO))->SetCheck(FALSE);
     m_nTriggerMode = MV_TRIGGER_MODE_OFF;
     int nRet = SetTriggerMode();
     if (MV_OK != nRet)
     {
         return;
     }
-    GetDlgItem(IDC_SOFTWARE_ONCE_BUTTON)->EnableWindow(FALSE);
 
     return;
 }
@@ -834,23 +817,12 @@ void CProjectTestDlg::OnBnClickedContinusModeRadio()
 // ch:按下触发模式按钮 | en:Click Trigger Mode button
 void CProjectTestDlg::OnBnClickedTriggerModeRadio()
 {
-    UpdateData(TRUE);
-    ((CButton *)GetDlgItem(IDC_CONTINUS_MODE_RADIO))->SetCheck(FALSE);
-    ((CButton *)GetDlgItem(IDC_TRIGGER_MODE_RADIO))->SetCheck(TRUE);
-    m_nTriggerMode = MV_TRIGGER_MODE_ON;
+    UpdateData(TRUE);    
     int nRet = SetTriggerMode();
     if (MV_OK != nRet)
     {
         ShowErrorMsg(TEXT("Set Trigger Mode Fail"), nRet);
         return;
-    }
-
-    if (m_bStartGrabbing == TRUE)
-    {
-        if (TRUE == m_bSoftWareTriggerCheck)
-        {
-            GetDlgItem(IDC_SOFTWARE_ONCE_BUTTON )->EnableWindow(TRUE);
-        }
     }
 
     return;
@@ -957,7 +929,10 @@ void CProjectTestDlg::OnBnClickedGetParameterButton()
 void CProjectTestDlg::OnBnClickedSetParameterButton()
 {
     UpdateData(TRUE);
-
+	if (!m_bStartGrabbing){
+		ShowErrorMsg(TEXT("请先打开相机！"), 0);
+		return;
+	}
     bool bIsSetSucceed = true;
     int nRet = SetExposureTime();
     if (nRet != MV_OK)
@@ -980,7 +955,7 @@ void CProjectTestDlg::OnBnClickedSetParameterButton()
     
     if (true == bIsSetSucceed)
     {
-        ShowErrorMsg(TEXT("Set Parameter Succeed"), nRet);
+        ShowErrorMsg(TEXT("设置参数成功！"), nRet);
     }
 
     return;
@@ -1028,19 +1003,19 @@ void CProjectTestDlg::OnBnClickedSaveBmpButton()
 }
 
 // ch:按下保存jpg图片按钮 | en:Click Save JPG button
-void CProjectTestDlg::OnBnClickedSaveJpgButton()
-{
-    m_nSaveImageType = MV_Image_Jpeg;
-    int nRet = SaveImage();
-    if (MV_OK != nRet)
-    {
-        ShowErrorMsg(TEXT("Save jpg fail"), nRet);
-        return;
-    }
-    ShowErrorMsg(TEXT("Save jpg succeed"), nRet);
-
-    return;
-}
+//void CProjectTestDlg::OnBnClickedSaveJpgButton()
+//{
+//    m_nSaveImageType = MV_Image_Jpeg;
+//    int nRet = SaveImage();
+//    if (MV_OK != nRet)
+//    {
+//        ShowErrorMsg(TEXT("Save jpg fail"), nRet);
+//        return;
+//    }
+//    ShowErrorMsg(TEXT("Save jpg succeed"), nRet);
+//
+//    return;
+//}
 
 // ch:右上角退出 | en:Exit from upper right corner
 void CProjectTestDlg::OnClose()
@@ -1079,30 +1054,54 @@ void CProjectTestDlg::OnBnClickedShowImage()
 {
 	m_hProjector->PorjectorDisplay(0);
 	if (m_ctrlDeviceCombo.GetCount() != 3){
-		ShowErrorMsg(TEXT("请检查摄像头是否插好！"), 0);
+		ShowErrorMsg(TEXT("请检查所有摄像头是否都已经插好！"), 0);
 		return;
 	}
 	
+	if (m_bOpenDevice){
+		ShowErrorMsg(TEXT("请先关闭设备再开始采集！"), 0);
+		return;
+	}
+	GetDlgItem(IDC_SHOW_IMAGE)->EnableWindow(FALSE);
 	SetTimer(0, 2000, NULL);
 	SetTimer(1, 4000, NULL);
 	SetTimer(2, 6000, NULL);
+	SetTimer(3, 8000, NULL);
+	SetTimer(4, 10000, NULL);
+	SetTimer(5, 12000, NULL);
 }
 
 void CProjectTestDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	m_ctrlDeviceCombo.SetCurSel(nIDEvent);
-	OnBnClickedOpenButton();
-	OnBnClickedStartGrabbingButton();
-	OnBnClickedTriggerModeRadio();
-	m_bSoftWareTriggerCheck = TRUE;
-	OnBnClickedSoftwareOnceButton();
-	OnBnClickedSaveBmpButton();
-	OnBnClickedCloseButton();
 	KillTimer(nIDEvent);
+	if (nIDEvent % 2 == 0)
+	{
+		m_ctrlDeviceCombo.SetCurSel((int)(nIDEvent/2));
+		OnBnClickedOpenButton();
+		OnBnClickedStartGrabbingButton();
+		OnBnClickedContinusModeRadio();
+	}
+	else
+	{
+		OnBnClickedSoftwareOnceButton();
+		OnBnClickedSaveBmpButton();
+		OnBnClickedCloseButton();
+	}
+
+	if (nIDEvent == 5)
+	{
+		GetDlgItem(IDC_SHOW_IMAGE)->EnableWindow(TRUE);
+	}
 }
 
 
 void CProjectTestDlg::OnBnClickedInitStatic()
+{
+	// TODO:  在此添加控件通知处理程序代码
+}
+
+
+void CProjectTestDlg::OnStnClickedExposureStatic()
 {
 	// TODO:  在此添加控件通知处理程序代码
 }

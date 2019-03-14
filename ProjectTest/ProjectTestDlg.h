@@ -138,11 +138,7 @@ public:
     afx_msg void OnBnClickedStartGrabbingButton();      // ch:开始采集 | en:Start Grabbing
     afx_msg void OnBnClickedStopGrabbingButton();       // ch:结束采集 | en:Stop Grabbing
     afx_msg void OnBnClickedSoftwareTriggerCheck();     // ch:软触发 | en:Software Trigger
-    afx_msg void OnBnClickedSoftwareOnceButton();       // ch:软触发一次 | en:Software Trigger Execute Once
-  
-    /*ch:图像保存 | en:Image Save*/
-    afx_msg void OnBnClickedSaveBmpButton();            // ch:保存bmp | en:Save bmp
-    afx_msg void OnBnClickedSaveJpgButton();            // ch:保存jpg | en:Save jpg
+ 
   
     /*ch:参数设置获取 | en:Parameters Get and Set*/
     afx_msg void OnBnClickedGetParameterButton();       // ch:获取参数 | en:Get Parameter
@@ -156,4 +152,10 @@ public:
 	afx_msg void OnBnClickedShowImage();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnBnClickedInitStatic();
+
+private:
+	void OnBnClickedSaveBmpButton();            // ch:保存bmp | en:Save bmp
+	void OnBnClickedSoftwareOnceButton();       // ch:软触发一次 | en:Software Trigger Execute Once
+public:
+	afx_msg void OnStnClickedExposureStatic();
 };

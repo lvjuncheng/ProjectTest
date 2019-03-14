@@ -20,6 +20,7 @@
 #define IDC_EXPOSURE_EDIT               1011
 #define IDC_GAIN_EDIT                   1012
 #define IDC_FRAME_RATE_EDIT             1013
+#define IDC_GAIN_EDIT2                  1013
 #define IDC_GET_PARAMETER_BUTTON        1014
 #define IDC_SET_PARAMETER_BUTTON        1015
 #define IDC_DEVICE_COMBO                1016
@@ -31,8 +32,9 @@
 #define IDC_GAIN_STATIC                 1022
 #define IDC_DISPLAY_STATIC              1023
 #define IDC_FRAME_RATE_STATIC           1024
+#define IDC_GAIN_STATIC2                1024
 #define IDC_SHOW_IMAGE                  1025
-#define IDC_SAVE_JPG_BUTTON				1026
+#define IDC_SAVE_JPG_BUTTON             1026
 
 // Next default values for new objects
 // 
